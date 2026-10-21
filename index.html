@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="img/boo.png">
+<meta property="og:title" content="Boo's Candy Dash">
+<meta property="og:description" content="A Game Boy Color platformer for kids. Free Beta 1, October 30, 2026.">
+<meta property="og:image" content="https://booscandydash.com/img/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<title>Boo's Candy Dash</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Boo's Candy Dash is a Game Boy Color platformer for kids. Help Boo, a friendly ghost with a sweet tooth, grab every candy and race home to her pumpkin. Free Beta 1, October 30, 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one night-time route, top to bottom. Sky at the top, a cream title-screen
+   "label" for the hero (the logo was drawn for white), the ground and grass at the bottom.
+   Single dark theme on purpose: the game only exists at night. Colors are sampled from the game's palettes. */
+:root{
+  --night:#1a3c8c;      /* sky, palette 0 */
+  --deep:#16173d;       /* outlines, deepest navy */
+  --dusk:#22489e;       /* raised panels */
+  --cream:#fff7c5;      /* title screen paper */
+  --paper:#fafaf5;
+  --ink:#16173d;
+  --text:#e6eef5;
+  --muted:#a59cbd;      /* HUD lavender */
+  --candy:#e6529c;
+  --pumpkin:#f7ad3a;
+  --rind:#d66b19;
+  --grass:#7fe04f;
+  --grass-dk:#46b12f;
+  --display:"Pixelify Sans", "Courier New", monospace;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --px:4px;             /* one game pixel on the page, for borders */
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night);color:var(--text);font:400 1.0625rem/1.6 var(--body);
+  background-image:url(img/sky.png);background-size:960px auto;background-repeat:repeat;image-rendering:pixelated}
+img{image-rendering:pixelated;image-rendering:crisp-edges;max-width:100%}
+a{color:var(--pumpkin)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--pumpkin);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.1;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.9rem,4vw,2.6rem);color:var(--paper)}
+h2 .hi{color:var(--pumpkin)}
+.eyebrow{font-family:var(--display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--grass);font-size:.95rem;margin:0 0 .4rem}
+section{padding-block:clamp(56px,9vw,104px)}
+.lead{font-size:1.15rem;max-width:58ch;margin:.9rem 0 0;color:var(--text)}
+
+/* --- hero --- */
+.top{padding-block:20px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.top nav{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--display);font-weight:500}
+.top nav a{color:var(--text);text-decoration:none}
+.top nav a:hover{color:var(--pumpkin)}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;color:var(--paper);text-decoration:none;font-size:1.15rem}
+.mark img{width:32px;height:32px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(36px,6vw,72px) clamp(24px,4vw,48px);position:relative}
+.moon{position:absolute;right:-6px;top:6px;width:64px;opacity:.95;z-index:0}
+.gbc{position:relative;z-index:1}
+.label{background:var(--paper);color:var(--ink);padding:clamp(24px,4vw,40px);border:var(--px) solid var(--deep);box-shadow:8px 8px 0 var(--deep);position:relative}
+.label .logo{width:100%;max-width:420px;display:block;margin:0 auto 22px}
+.label p{margin:0 0 1rem;font-size:1.1rem}
+.label .tagline{font-family:var(--display);font-weight:500;font-size:1.25rem;line-height:1.35}
+.date{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;color:var(--rind);font-size:1.05rem;margin-bottom:18px}
+.date img{width:24px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{font-family:var(--display);font-weight:700;font-size:1.1rem;padding:12px 20px;border:var(--px) solid var(--deep);text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:4px 4px 0 var(--deep);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--deep)}
+.btn.primary{background:var(--pumpkin);color:var(--ink)}
+.btn.ghost{background:var(--paper);color:var(--ink)}
+.btn img{width:16px}
+.small{font-size:.9rem;color:#4a4a6a;margin:14px 0 0}
+
+/* the handheld */
+.gbc{background:#6b3a8c;border-radius:18px 18px 56px 18px;padding:22px 22px 30px;border:var(--px) solid var(--deep);box-shadow:8px 8px 0 var(--deep);max-width:520px;justify-self:center;width:100%}
+.bezel{background:#2b2b44;border-radius:10px 10px 30px 10px;padding:18px 26px 14px}
+.screen{aspect-ratio:160/144;width:100%;background:#000;display:block;border:2px solid #000}
+.screen img{width:100%;height:100%;display:block}
+.bezel-txt{font-family:var(--display);font-size:.8rem;color:var(--muted);text-align:center;margin-top:8px;letter-spacing:.12em}
+.bezel-txt b{color:var(--candy)}.bezel-txt i{font-style:normal;color:var(--grass)}.bezel-txt u{text-decoration:none;color:var(--pumpkin)}
+.pads{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding:0 8px}
+.dpad{width:78px;height:78px;position:relative}
+.dpad::before,.dpad::after{content:"";position:absolute;background:var(--deep);border-radius:4px}
+.dpad::before{left:26px;top:0;width:26px;height:78px}.dpad::after{top:26px;left:0;height:26px;width:78px}
+.ab{display:flex;gap:14px;transform:rotate(-22deg)}
+.ab span{width:42px;height:42px;border-radius:50%;background:var(--deep);color:var(--muted);font-family:var(--display);font-weight:700;display:grid;place-items:center;font-size:.95rem}
+
+/* --- how it works --- */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:40px;counter-reset:s}
+.step{background:var(--dusk);border:var(--px) solid var(--deep);padding:24px;box-shadow:6px 6px 0 var(--deep)}
+.step .art{height:88px;display:flex;align-items:flex-end;gap:10px;margin-bottom:18px}
+.step .art img{height:64px}
+.step .art img.tile{height:48px}
+.step h3{font-size:1.35rem;color:var(--paper);display:flex;gap:10px;align-items:baseline}
+.step h3::before{counter-increment:s;content:counter(s);color:var(--pumpkin)}
+.step p{margin:.6rem 0 0}
+.lit{filter:drop-shadow(0 0 10px #f7ad3a) drop-shadow(0 0 18px #f7ad3a99);animation:breathe 1.6s ease-in-out infinite}
+@keyframes breathe{50%{filter:drop-shadow(0 0 4px #f7ad3a) drop-shadow(0 0 8px #f7ad3a66)}}
+.score{margin-top:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:20px;align-items:center}
+.stars{display:flex;flex-direction:column;gap:10px}
+.star-row{display:flex;gap:14px;align-items:center;background:#16173d88;padding:12px 16px;border-left:var(--px) solid var(--pumpkin)}
+.star-row .s{font-family:var(--display);font-size:1.4rem;color:var(--pumpkin);letter-spacing:.1em;min-width:4.2em}
+.star-row .s em{color:#5b5f8c;font-style:normal}
+.formula{font-family:var(--display);font-weight:500;font-size:1.05rem;color:var(--cream);background:var(--deep);padding:18px 20px;border:var(--px) solid #000;line-height:1.5}
+.formula span{color:var(--grass)}.formula strong{color:var(--candy);font-weight:500}
+
+/* --- cast --- */
+.cast{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:40px}
+.who{background:var(--paper);color:var(--ink);border:var(--px) solid var(--deep);padding:18px 16px 20px;box-shadow:6px 6px 0 var(--deep);display:flex;flex-direction:column;gap:6px}
+.who .spr{height:84px;display:grid;place-items:center;background:var(--night);border:var(--px) solid var(--deep);margin-bottom:8px}
+.who .spr img{width:64px;height:64px}
+.who h3{font-size:1.25rem}
+.who p{margin:0;font-size:.98rem;line-height:1.45}
+.who .tag{font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--rind)}
+.note{margin-top:22px;color:var(--text);font-size:1rem}
+
+/* --- controls --- */
+.ctrl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,56px);margin-top:36px;align-items:start}
+.keys{display:flex;flex-direction:column;gap:12px}
+.key{display:grid;grid-template-columns:118px minmax(0,1fr);gap:16px;align-items:center}
+.cap{font-family:var(--display);font-weight:700;background:var(--paper);color:var(--ink);border:3px solid var(--deep);box-shadow:3px 3px 0 var(--deep);padding:6px 10px;text-align:center;font-size:1rem}
+.cap.round{border-radius:999px}
+.tips{background:var(--dusk);border:var(--px) solid var(--deep);padding:24px;box-shadow:6px 6px 0 var(--deep)}
+.tips h3{color:var(--paper);font-size:1.3rem;margin-bottom:10px}
+.tips ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+
+/* --- screens --- */
+.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:36px}
+.shots figure{margin:0;background:var(--deep);border:var(--px) solid #000;padding:8px}
+.shots img{width:100%;display:block;aspect-ratio:160/144}
+.shots figcaption{font-family:var(--display);font-size:.9rem;color:var(--muted);padding:8px 2px 2px}
+
+/* --- play --- */
+.ways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:36px}
+.way{background:var(--paper);color:var(--ink);border:var(--px) solid var(--deep);padding:24px;box-shadow:6px 6px 0 var(--deep)}
+.way h3{font-size:1.35rem;margin-bottom:8px}
+.way p{margin:0 0 .6rem}
+.way code{font-size:.92em;background:#e9e4c8;padding:1px 5px}
+.way .soon{font-family:var(--display);font-weight:700;color:var(--rind)}
+
+/* --- ground footer --- */
+footer{margin-top:24px;background:var(--deep)}
+.grass{height:32px;background:url(img/grass.png) repeat-x;background-size:auto 32px;image-rendering:pixelated;position:relative}
+.grass img{position:absolute;bottom:20px;width:64px}
+.grass .p1{left:8%}.grass .b1{left:calc(8% + 72px);bottom:44px;width:48px;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:28px 40px;color:var(--muted);font-size:.95rem}
+.foot b{color:var(--text);font-weight:700}
+
+@media (max-width:900px){
+  .hero,.score,.ctrl{grid-template-columns:minmax(0,1fr)}
+  .gbc{max-width:440px}
+  .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps,.ways{grid-template-columns:minmax(0,1fr)}
+  .shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .moon{display:none}
+}
+@media (max-width:480px){
+  .cast,.shots{grid-template-columns:minmax(0,1fr)}
+  .key{grid-template-columns:100px minmax(0,1fr)}
+  .top nav{gap:14px;font-size:.95rem}
+  .bezel{padding:12px 14px 10px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top"><img src="img/boo.png" alt="">Boo's Candy Dash</a>
+    <nav aria-label="Sections">
+      <a href="#how">How to play</a>
+      <a href="#cast">Trick-or-treaters</a>
+      <a href="#controls">Controls</a>
+      <a href="#play">Get the game</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <img class="moon" src="img/moon.png" alt="">
+      <div class="label">
+        <img class="logo" src="img/logo.png" alt="Boo's Candy Dash">
+        <div class="date"><img src="img/pumpkin.png" alt="">Beta 1 · Free · October 30, 2026</div>
+        <p class="tagline">Help Boo, a friendly ghost with a sweet tooth, grab every candy and race home to her pumpkin before the clock runs up.</p>
+        <p>A brand-new platformer for the Game Boy Color, made for kids. Play it in your browser, on an emulator, or on a real Game Boy Color.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#play"><img src="img/candy.png" alt="">Get the game</a>
+          <a class="btn ghost" href="#how">How to play</a>
+        </div>
+      </div>
+
+      <div class="gbc" aria-label="Boo's Candy Dash running on a Game Boy Color">
+        <div class="bezel">
+          <div class="screen"><img src="img/gameplay.gif" alt="Gameplay: the title screen, the LEVEL 1 card, then Boo floating through level 1 collecting candy past mummies."></div>
+          <div class="bezel-txt">BOO'S <b>CANDY</b> <u>DASH</u> · BETA 1</div>
+        </div>
+        <div class="pads" aria-hidden="true"><div class="dpad"></div><div class="ab"><span>B</span><span>A</span></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">How a level works</p>
+    <h2>Every candy. Then <span class="hi">home.</span></h2>
+    <p class="lead">Every Halloween night Boo floats out of her pumpkin to snag the candy trick-or-treaters drop. Each level is a race: the stopwatch starts the moment you float off.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="art"><img src="img/boo.png" alt="Boo"><img class="tile" src="img/candy.png" alt="A hard candy"></div>
+        <h3>Grab every candy</h3>
+        <p>The counter at the bottom of the screen shows how many are left. Miss one and the pumpkin stays shut.</p>
+      </div>
+      <div class="step">
+        <div class="art"><img src="img/pumpkin.png" alt="Plain pumpkin" style="opacity:.55"><img class="lit" src="img/pumpkin.png" alt="Glowing jack-o'-lantern"></div>
+        <h3>Watch it light up</h3>
+        <p>At zero, the plain pumpkin turns into a glowing jack-o'-lantern, and arrows point you the way home.</p>
+      </div>
+      <div class="step">
+        <div class="art"><img class="lit" src="img/pumpkin.png" alt=""><img src="img/boo.png" alt="Boo" style="height:44px;margin-left:-28px;margin-bottom:22px"></div>
+        <h3>Float back inside</h3>
+        <p>Boo zips into her pumpkin and the level is done. Three levels, one run, one score.</p>
+      </div>
+    </div>
+
+    <div class="score">
+      <div class="stars" aria-label="Star ratings">
+        <div class="star-row"><span class="s">★<em>★★</em></span><span>Finish the level</span></div>
+        <div class="star-row"><span class="s">★★<em>★</em></span><span>Beat the target time</span></div>
+        <div class="star-row"><span class="s">★★★</span><span>Beat the time with no bumps. Listen for the happy jingle.</span></div>
+      </div>
+      <div class="formula">
+        Level score = 1000 <span>+ 10 for every second under par</span> <strong>− 100 for every bump</strong><br>
+        Run score = every level you clear, added up. Your best ever is kept on the title screen.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cast" style="background:#16173d55">
+  <div class="wrap">
+    <p class="eyebrow">Meet the neighborhood</p>
+    <h2>Boo can't fight. <span class="hi">Just dodge.</span></h2>
+    <p class="lead">Every bump costs one of Boo's six health points. Run out and the night's over. Each trick-or-treater has a trick of their own.</p>
+    <div class="cast">
+      <div class="who"><div class="spr"><img data-anim="img/pirate.png|img/pirate2.png" src="img/pirate.png" alt="Pirate"></div><span class="tag">Walks the plank</span><h3>Pirate</h3><p>Marches back and forth along a platform. Time your float over the top.</p></div>
+      <div class="who"><div class="spr"><img data-anim="img/mummy.png|img/mummy2.png" src="img/mummy.png" alt="Mummy"></div><span class="tag">All wrapped up</span><h3>Mummy</h3><p>A bump wraps Boo in bandages and slows her down for a couple of seconds.</p></div>
+      <div class="who"><div class="spr"><img data-anim="img/frank.png|img/frank2.png" src="img/frank.png" alt="Frankenstein"></div><span class="tag">Big arms</span><h3>Frankenstein</h3><p>A bump throws Boo straight up into the air. Out of the way, at least.</p></div>
+      <div class="who"><div class="spr"><img data-anim="img/witch.png|img/witch2.png" src="img/witch.png" alt="Witch"></div><span class="tag">Watch the wiggle</span><h3>Witch</h3><p>Waits, wiggles, then charges. The wiggle is your warning.</p></div>
+      <div class="who"><div class="spr"><img data-anim="img/zombie.png|img/zombie2.png" src="img/zombie.png" alt="Zombie"></div><span class="tag">Surprisingly quick</span><h3>Zombie</h3><p>Also waits, wiggles and charges. Float up and let it run past.</p></div>
+    </div>
+    <p class="note">Watch out for pits too: Boo sinks out of sight and bounces back a point lighter. The first screen of every level is always safe, and a med pac gives back two health.</p>
+  </div>
+</section>
+
+<section id="controls">
+  <div class="wrap">
+    <p class="eyebrow">Controls</p>
+    <h2>Easy to float. <span class="hi">Hard to master.</span></h2>
+    <div class="ctrl">
+      <div class="keys">
+        <div class="key"><span class="cap">◀ ▶</span><span>Float left and right</span></div>
+        <div class="key"><span class="cap round">A</span><span>Float up. Tap for a little, hold for a lot. <b>Up</b> on the D-pad works too.</span></div>
+        <div class="key"><span class="cap round">B</span><span>Brake to a near-hover</span></div>
+        <div class="key"><span class="cap">▼</span><span>Dive down faster</span></div>
+        <div class="key"><span class="cap">START</span><span>Pause. The clock stops too.</span></div>
+      </div>
+      <div class="tips">
+        <h3>Ghost tips</h3>
+        <ul>
+          <li>Boo is always gently drifting down. Little taps of A keep her level.</li>
+          <li>She floats right through walls and the sides of platforms, and only lands on top of things.</li>
+          <li>Hold B and Down together and B wins: Boo brakes.</li>
+          <li>The game saves every time you clear a level. Pick CONTINUE on the title screen to pick up where you left off.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens" style="background:#16173d55">
+  <div class="wrap">
+    <p class="eyebrow">Screenshots</p>
+    <h2>Straight off the cartridge</h2>
+    <div class="shots">
+      <figure><img src="img/title.png" alt="Title screen with NEW GAME, CONTINUE and BEST score"><figcaption>Title screen</figcaption></figure>
+      <figure><img src="img/play1.png" alt="Boo floating near a mummy and candy in level 1"><figcaption>Level 1</figcaption></figure>
+      <figure><img src="img/play3.png" alt="Boo near a pirate on a high platform"><figcaption>Pirates on the rooftops</figcaption></figure>
+      <figure><img src="img/card1.png" alt="LEVEL 1 card with houses and a pumpkin at night"><figcaption>Level card</figcaption></figure>
+      <figure><img src="img/play4.png" alt="Boo dodging a zombie at ground level"><figcaption>Zombie on the street</figcaption></figure>
+      <figure><img src="img/tally_win.png" alt="GREAT RUN! results screen"><figcaption>Results</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="play">
+  <div class="wrap">
+    <p class="eyebrow">Get the game</p>
+    <h2>Free on <span class="hi">October 30</span></h2>
+    <p class="lead">Beta 1 has three levels and takes a few minutes a run. It's free. If your family enjoys it, you can leave a tip on the itch.io page.</p>
+    <div class="ways">
+      <div class="way"><h3>In your browser</h3><p>Press Play on the itch.io page. On a phone or tablet, buttons appear right on the screen.</p><p class="soon">Coming October 30</p></div>
+      <div class="way"><h3>On an emulator</h3><p>Download <code>boos_candy_dash_beta.gbc</code> and open it in SameBoy, mGBA or any Game Boy Color emulator. Saves are kept in a <code>.sav</code> file next to it.</p></div>
+      <div class="way"><h3>On a real Game Boy Color</h3><p>Copy the ROM to a flash cart and play it on the real thing. It's made for Game Boy Color and won't run on an original Game Boy.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="grass"><img class="p1" src="img/pumpkin.png" alt=""><img class="b1" src="img/boo.png" alt=""></div>
+  <div class="wrap foot">
+    <span><b>Boo's Candy Dash</b> © 2026 Eldie Inc. Built with GBDK-2020.</span>
+    <span>Game Boy Color is a trademark of Nintendo. This is an unofficial homebrew game.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var imgs=[].slice.call(document.querySelectorAll('img[data-anim]'));
+  var f=0;
+  setInterval(function(){ f^=1; imgs.forEach(function(im){ var a=im.getAttribute('data-anim').split('|'); im.src=a[f]; }); }, 420);
+})();
+</script>
+
+</body>
+</html>
