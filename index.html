@@ -112,8 +112,10 @@ section{padding-block:clamp(56px,9vw,104px)}
 /* --- cast --- */
 .cast{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:40px}
 .who{background:var(--paper);color:var(--ink);border:var(--px) solid var(--deep);padding:18px 16px 20px;box-shadow:6px 6px 0 var(--deep);display:flex;flex-direction:column;gap:6px}
-.who .spr{height:84px;display:grid;place-items:center;background:var(--night);border:var(--px) solid var(--deep);margin-bottom:8px}
-.who .spr img{width:64px;height:64px}
+.who .spr{height:80px;position:relative;overflow:hidden;background:var(--night) url(img/grass.png) repeat-x left bottom;background-size:auto 16px;border:var(--px) solid var(--deep);margin-bottom:8px}
+.who .spr img{width:48px;height:48px;position:absolute;left:0;bottom:12px;will-change:transform}
+.who .spr img.boo{opacity:0}
+.who .spr img.still{left:50%;margin-left:-24px}
 .who h3{font-size:1.25rem}
 .who p{margin:0;font-size:.98rem;line-height:1.45}
 .who .tag{font-family:var(--display);font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--rind)}
@@ -251,11 +253,11 @@ footer{margin-top:24px;background:var(--deep)}
     <h2>Boo can't fight. <span class="hi">Just dodge.</span></h2>
     <p class="lead">Every bump costs one of Boo's six health points. Run out and the night's over. Each trick-or-treater has a trick of their own.</p>
     <div class="cast">
-      <div class="who"><div class="spr"><img data-anim="img/pirate.png|img/pirate2.png" src="img/pirate.png" alt="Pirate"></div><span class="tag">Walks the plank</span><h3>Pirate</h3><p>Marches back and forth along a platform. Time your float over the top.</p></div>
-      <div class="who"><div class="spr"><img data-anim="img/mummy.png|img/mummy2.png" src="img/mummy.png" alt="Mummy"></div><span class="tag">All wrapped up</span><h3>Mummy</h3><p>A bump wraps Boo in bandages and slows her down for a couple of seconds.</p></div>
-      <div class="who"><div class="spr"><img data-anim="img/frank.png|img/frank2.png" src="img/frank.png" alt="Frankenstein"></div><span class="tag">Big arms</span><h3>Frankenstein</h3><p>A bump throws Boo straight up into the air. Out of the way, at least.</p></div>
-      <div class="who"><div class="spr"><img data-anim="img/witch.png|img/witch2.png" src="img/witch.png" alt="Witch"></div><span class="tag">Watch the wiggle</span><h3>Witch</h3><p>Waits, wiggles, then charges. The wiggle is your warning.</p></div>
-      <div class="who"><div class="spr"><img data-anim="img/zombie.png|img/zombie2.png" src="img/zombie.png" alt="Zombie"></div><span class="tag">Surprisingly quick</span><h3>Zombie</h3><p>Also waits, wiggles and charges. Float up and let it run past.</p></div>
+      <div class="who"><div class="spr" data-kind="patrol" data-idle="72" data-charge="0"><img class="e still" data-anim="img/pirate.png|img/pirate2.png" src="img/pirate.png" alt="Pirate"></div><span class="tag">Walks the plank</span><h3>Pirate</h3><p>Marches back and forth along a platform. Time your float over the top.</p></div>
+      <div class="who"><div class="spr" data-kind="patrol" data-idle="48" data-charge="0"><img class="e still" data-anim="img/mummy.png|img/mummy2.png" src="img/mummy.png" alt="Mummy"></div><span class="tag">All wrapped up</span><h3>Mummy</h3><p>A bump wraps Boo in bandages and slows her down for a couple of seconds.</p></div>
+      <div class="who"><div class="spr" data-kind="patrol" data-idle="72" data-charge="0"><img class="e still" data-anim="img/frank.png|img/frank2.png" src="img/frank.png" alt="Frankenstein"></div><span class="tag">Big arms</span><h3>Frankenstein</h3><p>A bump throws Boo straight up into the air. Out of the way, at least.</p></div>
+      <div class="who"><div class="spr" data-kind="aggro" data-idle="0" data-charge="192"><img class="e still" data-anim="img/witch.png|img/witch2.png" src="img/witch.png" alt="Witch"><img class="boo" src="img/boo.png" data-anim="img/boo.png|img/boo2.png" alt=""></div><span class="tag">Watch the wiggle</span><h3>Witch</h3><p>Waits, wiggles, then charges. The wiggle is your warning.</p></div>
+      <div class="who"><div class="spr" data-kind="aggro" data-idle="48" data-charge="144"><img class="e still" data-anim="img/zombie.png|img/zombie2.png" src="img/zombie.png" alt="Zombie"><img class="boo" src="img/boo.png" data-anim="img/boo.png|img/boo2.png" alt=""></div><span class="tag">Surprisingly quick</span><h3>Zombie</h3><p>Also waits, wiggles and charges. Float up and let it run past.</p></div>
     </div>
     <p class="note">Watch out for pits too: Boo sinks out of sight and bounces back a point lighter. The first screen of every level is always safe, and a med pac gives back two health.</p>
   </div>
@@ -296,7 +298,7 @@ footer{margin-top:24px;background:var(--deep)}
       <figure><img src="img/play3.png" alt="Boo near a pirate on a high platform"><figcaption>Pirates on the rooftops</figcaption></figure>
       <figure><img src="img/card1.png" alt="LEVEL 1 card with houses and a pumpkin at night"><figcaption>Level card</figcaption></figure>
       <figure><img src="img/play4.png" alt="Boo dodging a zombie at ground level"><figcaption>Zombie on the street</figcaption></figure>
-      <figure><img src="img/tally_win.png" alt="GREAT RUN! results screen"><figcaption>Results</figcaption></figure>
+      <figure><img src="img/stars.png" alt="Three gold stars over the lit pumpkin after a clean level"><figcaption>Three stars</figcaption></figure>
     </div>
   </div>
 </section>
@@ -323,11 +325,79 @@ footer{margin-top:24px;background:var(--deep)}
 </footer>
 
 <script>
+/* Trick-or-treater lanes. Speeds and timings are the game's own numbers from main.c
+   (1/256 px per frame at 60 frames a second), scaled x3 because the sprites are drawn at 3x.
+   Patrol: walk, turn at the lane edge, flip frames every 30 frames.
+   Aggro (witch, zombie): when Boo floats in level with them they hold still and twitch
+   (frame flip every 5 frames for 20 frames), then charge at her. */
 (function(){
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var imgs=[].slice.call(document.querySelectorAll('img[data-anim]'));
-  var f=0;
-  setInterval(function(){ f^=1; imgs.forEach(function(im){ var a=im.getAttribute('data-anim').split('|'); im.src=a[f]; }); }, 420);
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lanes = [].slice.call(document.querySelectorAll('.spr[data-kind]'));
+  if (reduce || !lanes.length) return;
+  var S = 3, W = 48;
+  function frames(img){ return img.getAttribute('data-anim').split('|'); }
+  var L = lanes.map(function(el, n){
+    var e = el.querySelector('img.e'), b = el.querySelector('img.boo');
+    e.classList.remove('still');
+    var l = { el:el, e:e, ef:frames(e), b:b, bf:b ? frames(b) : null,
+      kind:el.getAttribute('data-kind'), idle:+el.getAttribute('data-idle'), charge:+el.getAttribute('data-charge'),
+      x:0, dir:n % 2 ? -1 : 1, fr:0, ft:n * 7, phase:'idle', t:60 + n * 25, wind:0,
+      bx:0, by:0, bvis:false, bft:0, bfr:0, side:1, hover:false };
+    el.addEventListener('mouseenter', function(){ l.hover = true; if (l.phase === 'idle') l.t = 0; });
+    el.addEventListener('mouseleave', function(){ l.hover = false; });
+    el.addEventListener('click', function(){ if (l.phase === 'idle') l.t = 0; });
+    return l;
+  });
+  function width(l){ return l.el.clientWidth; }
+  function step(l){
+    var w = width(l), max = Math.max(0, w - W), speed = 0, rate = 30;
+    if (l.kind === 'patrol') {
+      speed = l.idle;
+    } else {
+      if (l.phase === 'idle') {
+        speed = l.idle;
+        var atEdge = l.x < 6 || l.x > max - 6;
+        if (--l.t <= 0 && atEdge) {      // Boo floats in from the side away from the enemy
+          l.side = (l.x + W/2 < w/2) ? 1 : -1;
+          l.bx = l.side > 0 ? w + 4 : -W - 4; l.by = 0; l.bvis = true; l.phase = 'enter';
+        }
+      } else if (l.phase === 'enter') {
+        speed = 0;
+        var target = l.side > 0 ? max - 4 : 4;
+        l.bx += (target - l.bx) * 0.08;
+        if (Math.abs(target - l.bx) < 6) { l.phase = 'wind'; l.wind = 20; }
+      } else if (l.phase === 'wind') {
+        rate = 5;                         // AGGRO_WINDUP_ANIM
+        if (--l.wind <= 0) { l.phase = 'charge'; l.dir = l.side; }
+      } else if (l.phase === 'charge') {
+        speed = l.charge;
+        l.by = Math.min(l.by + 3, 140);   // Boo floats up out of the way
+        if (l.by > 110) l.bvis = false;
+      } else if (l.phase === 'rest') {
+        if (--l.t <= 0) { l.phase = 'idle'; l.t = l.hover ? 30 : 110; }
+      }
+    }
+    l.x += l.dir * speed / 256 * S;
+    if ((l.dir < 0 && l.x <= 0) || (l.dir > 0 && l.x >= max)) {
+      l.x = Math.max(0, Math.min(max, l.x));
+      if (l.phase === 'charge') { l.phase = 'rest'; l.t = 50; l.bvis = false; }
+      else if (speed) l.dir = -l.dir;
+    }
+    if (++l.ft >= rate) { l.ft = 0; l.fr ^= 1; l.e.src = l.ef[l.fr]; }
+    l.e.style.transform = 'translateX(' + l.x.toFixed(1) + 'px)' + (l.dir < 0 ? ' scaleX(-1)' : '');
+    if (l.b) {
+      if (++l.bft >= 12) { l.bft = 0; l.bfr ^= 1; l.b.src = l.bf[l.bfr]; }
+      l.b.style.opacity = l.bvis ? 1 : 0;
+      l.b.style.transform = 'translate(' + l.bx.toFixed(1) + 'px,' + (-l.by).toFixed(1) + 'px)' + (l.side > 0 ? ' scaleX(-1)' : '');
+    }
+  }
+  var last = performance.now(), acc = 0;
+  function loop(now){
+    acc += Math.min(100, now - last); last = now;
+    while (acc >= 1000/60) { L.forEach(step); acc -= 1000/60; }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 })();
 </script>
 
