@@ -146,6 +146,22 @@ section{padding-block:clamp(56px,9vw,104px)}
 .way .soon{font-family:var(--display);font-weight:700;color:var(--rind)}
 
 /* --- ground footer --- */
+/* --- email signup --- */
+.news{margin-top:48px;background:var(--paper);color:var(--ink);border:var(--px) solid var(--deep);box-shadow:8px 8px 0 var(--deep);padding:clamp(22px,4vw,36px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.news .ico{display:flex;gap:6px;align-items:flex-end}
+.news .ico img{width:48px}
+.news .ico img.c{width:32px;margin-bottom:6px}
+.news h3{font-size:clamp(1.4rem,3vw,1.8rem);margin-bottom:6px}
+.news p{margin:0 0 14px}
+.news form{display:flex;gap:10px;flex-wrap:wrap}
+.news input[type=email]{flex:1 1 220px;min-width:0;font:inherit;font-size:1.05rem;padding:12px 14px;border:3px solid var(--deep);background:#fff;color:var(--ink)}
+.news input[type=email]:focus{outline:3px solid var(--pumpkin);outline-offset:2px}
+.news button{cursor:pointer}
+.news button[disabled]{opacity:.6;cursor:wait}
+.news .msg{margin:12px 0 0;font-family:var(--display);font-weight:700;min-height:1.4em}
+.news .msg.ok{color:#2f7d1f}.news .msg.err{color:#b3261e}
+.news .fine{font-size:.85rem;color:#55556e;margin:10px 0 0}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
 footer{margin-top:24px;background:var(--deep)}
 .grass{height:32px;background:url(img/grass.png) repeat-x;background-size:auto 32px;image-rendering:pixelated;position:relative}
 .grass img{position:absolute;bottom:20px;width:64px}
@@ -155,6 +171,7 @@ footer{margin-top:24px;background:var(--deep)}
 .foot b{color:var(--text);font-weight:700}
 
 @media (max-width:900px){
+  .news{grid-template-columns:minmax(0,1fr)}
   .hero,.score,.ctrl{grid-template-columns:minmax(0,1fr)}
   .gbc{max-width:440px}
   .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -313,6 +330,21 @@ footer{margin-top:24px;background:var(--deep)}
       <div class="way"><h3>On an emulator</h3><p>Download <code>boos_candy_dash_beta.gbc</code> from <a href="https://justinevanblair.itch.io/boos-candy-dash" target="_blank" rel="noopener">the itch.io page</a> and open it in SameBoy, mGBA or any Game Boy Color emulator. Saves are kept in a <code>.sav</code> file next to it.</p></div>
       <div class="way"><h3>On a real Game Boy Color</h3><p>Copy the ROM to a flash cart and play it on the real thing. It's made for Game Boy Color and won't run on an original Game Boy.</p></div>
     </div>
+
+    <div class="news" id="news">
+      <div class="ico" aria-hidden="true"><img src="img/boo.png" alt=""><img class="c" src="img/candy.png" alt=""></div>
+      <div>
+        <h3>Get a heads-up when new levels land</h3>
+        <p>One email when the next update or the full game is ready. No spam, and you can unsubscribe anytime.</p>
+        <form id="news-form" action="https://app.kit.com/forms/10093529/subscriptions" method="post" novalidate>
+          <label class="hp" aria-hidden="true">Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <label for="news-email" class="hp">Email address</label>
+          <input id="news-email" type="email" name="email_address" placeholder="you@example.com" autocomplete="email" required>
+          <button class="btn primary" type="submit"><img src="img/candy.png" alt="">Notify me</button>
+        </form>
+        <p class="msg" id="news-msg" role="status" aria-live="polite"></p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -324,6 +356,26 @@ footer{margin-top:24px;background:var(--deep)}
   </div>
 </footer>
 
+<script>
+/* Email signup -> Kit form. Posts in the background so the visitor stays on the page. */
+(function(){
+  var f=document.getElementById('news-form'); if(!f) return;
+  var msg=document.getElementById('news-msg'), btn=f.querySelector('button'), input=f.querySelector('#news-email');
+  f.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if (f.website.value) return;                       // bots fill the hidden field
+    var email=input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className='msg err'; msg.textContent='That email address doesn\u2019t look right. Check it and try again.'; input.focus(); return; }
+    btn.disabled=true; msg.className='msg'; msg.textContent='Sending\u2026';
+    var body=new FormData(); body.append('email_address', email);
+    fetch(f.action,{method:'POST',body:body,headers:{'Accept':'application/json'}})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json().catch(function(){return {};}); })
+      .then(function(){ msg.className='msg ok'; msg.textContent='You\u2019re on the list! Check your inbox to confirm.'; f.reset(); })
+      .catch(function(){ msg.className='msg err'; msg.textContent='That didn\u2019t go through. Please try again in a moment.'; })
+      .finally(function(){ btn.disabled=false; });
+  });
+})();
+</script>
 <script>
 /* Trick-or-treater lanes. Speeds and timings are the game's own numbers from main.c
    (1/256 px per frame at 60 frames a second), scaled x3 because the sprites are drawn at 3x.
